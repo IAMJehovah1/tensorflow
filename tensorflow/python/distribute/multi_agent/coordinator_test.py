@@ -15,20 +15,20 @@
 """Tests for the Multi-Agent Task Coordination System."""
 
 import time
-import unittest
 
 from tensorflow.python.distribute.multi_agent.agent import Agent
 from tensorflow.python.distribute.multi_agent.agent import AgentStatus
 from tensorflow.python.distribute.multi_agent.coordinator import TaskCoordinator
 from tensorflow.python.distribute.multi_agent.task import Task
 from tensorflow.python.distribute.multi_agent.task import TaskStatus
+from tensorflow.python.platform import test
 
 
 # ---------------------------------------------------------------------------
 # Task tests
 # ---------------------------------------------------------------------------
 
-class TaskTest(unittest.TestCase):
+class TaskTest(test.TestCase):
 
   def test_initial_status_is_pending(self):
     task = Task(fn=lambda: None)
@@ -107,7 +107,7 @@ class TaskTest(unittest.TestCase):
 # TaskCoordinator tests
 # ---------------------------------------------------------------------------
 
-class TaskCoordinatorTest(unittest.TestCase):
+class TaskCoordinatorTest(test.TestCase):
 
   def _make_coordinator(self, num_agents=2):
     coord = TaskCoordinator(num_agents=num_agents)
@@ -247,7 +247,7 @@ class TaskCoordinatorTest(unittest.TestCase):
 # Agent tests
 # ---------------------------------------------------------------------------
 
-class AgentTest(unittest.TestCase):
+class AgentTest(test.TestCase):
 
   def test_initial_status_idle(self):
     coord = TaskCoordinator(num_agents=1)
@@ -285,4 +285,4 @@ class AgentTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-  unittest.main()
+  test.main()
