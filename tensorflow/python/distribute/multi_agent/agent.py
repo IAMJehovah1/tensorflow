@@ -17,6 +17,8 @@
 import enum
 import threading
 
+from tensorflow.python.distribute.multi_agent.task import TaskStatus
+
 
 class AgentStatus(enum.Enum):
   """Lifecycle status of an agent."""
@@ -122,7 +124,7 @@ class Agent:
         task._execute()  # pylint: disable=protected-access
       finally:
         with self._lock:
-          if task.status.value == "completed":
+          if task.status == TaskStatus.COMPLETED:
             self._tasks_completed += 1
           else:
             self._tasks_failed += 1

@@ -273,7 +273,11 @@ class AgentTest(unittest.TestCase):
   def test_agent_counts_failed_tasks(self):
     coord = TaskCoordinator(num_agents=1)
     coord.start()
-    coord.schedule(lambda: (_ for _ in ()).throw(ValueError("x")))
+
+    def fail():
+      raise ValueError("x")
+
+    coord.schedule(fail)
     coord.join(timeout=5.0)
     coord.stop()
     total_failed = sum(a.tasks_failed for a in coord.agents)
