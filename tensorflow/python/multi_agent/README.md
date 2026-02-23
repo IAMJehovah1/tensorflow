@@ -16,7 +16,9 @@ tensorflow/python/multi_agent/
 ├── task.py           – Task, TaskStatus, TaskPriority
 ├── agent.py          – Agent
 ├── coordinator.py    – TaskCoordinator
-└── multi_agent_test.py
+├── auditor.py        – SelfEvaluationAuditor, AuditResult, ConfidenceLevel, FeedbackRating
+├── multi_agent_test.py
+└── auditor_test.py
 ```
 
 ---
@@ -95,10 +97,71 @@ print(coordinator.get_task_status_summary())
 
 ---
 
+## AI Self-Evaluation Auditor
+
+`SelfEvaluationAuditor` analyzes AI-generated responses and returns an
+`AuditResult` containing a confidence score, detected quality issues, a
+human-readable explanation, and a flag indicating whether expert review is
+recommended.  It also accepts user feedback to improve future evaluations.
+
+```python
+from tensorflow.python.multi_agent import SelfEvaluationAuditor, FeedbackRating
+
+auditor = SelfEvaluationAuditor()
+
+# Evaluate a response (optionally supply the original query for coverage checks).
+result = auditor.evaluate(
+    "The capital of France is Paris, located in the north of the country.",
+    query="What is the capital of France?",
+)
+print(result.confidence_score)      # e.g. 0.95
+print(result.confidence_level)      # ConfidenceLevel.HIGH
+print(result.explanation)           # "Confidence: 95%. No quality issues detected. ..."
+print(result.requires_human_review) # False
+
+# Record user feedback to adapt future evaluations.
+auditor.record_feedback(result.audit_id, FeedbackRating.HELPFUL)
+
+# Inspect cumulative feedback.
+print(auditor.get_feedback_summary())
+# {'helpful': 1, 'incomplete': 0, 'inaccurate': 0, 'total': 1}
+```
+
+### `SelfEvaluationAuditor`
+
+| Method | Description |
+|--------|-------------|
+| `evaluate(response, query=None)` | Analyse *response* and return an `AuditResult`. |
+| `record_feedback(audit_id, rating, correction=None)` | Store user feedback for a prior evaluation. |
+| `get_feedback_summary()` | Return a `dict` with counts per `FeedbackRating` plus `"total"`. |
+
+### `AuditResult`
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `audit_id` | `str` | UUID identifying this evaluation. |
+| `confidence_score` | `float` | Quality estimate in `[0.0, 1.0]`. |
+| `confidence_level` | `ConfidenceLevel` | `HIGH` (≥0.80) / `MEDIUM` (≥0.50) / `LOW` (<0.50). |
+| `flags` | `list[str]` | Detected quality issues. |
+| `explanation` | `str` | Narrative summary of how the score was reached. |
+| `requires_human_review` | `bool` | `True` when confidence is LOW. |
+
+### `FeedbackRating` (enum)
+
+`HELPFUL`, `INCOMPLETE`, `INACCURATE`
+
+### `ConfidenceLevel` (enum)
+
+`HIGH`, `MEDIUM`, `LOW`
+
+---
+
 ## Running the tests
 
 ```bash
 python -m pytest tensorflow/python/multi_agent/multi_agent_test.py -v
+python -m pytest tensorflow/python/multi_agent/auditor_test.py -v
 # or via the TensorFlow test runner:
 python tensorflow/python/multi_agent/multi_agent_test.py
+python tensorflow/python/multi_agent/auditor_test.py
 ```

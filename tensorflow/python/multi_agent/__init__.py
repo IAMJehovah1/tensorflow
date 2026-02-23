@@ -19,9 +19,16 @@ Public API::
     from tensorflow.python.multi_agent import Task, TaskPriority, TaskStatus
     from tensorflow.python.multi_agent import Agent
     from tensorflow.python.multi_agent import TaskCoordinator
+    from tensorflow.python.multi_agent import (
+        AuditResult, ConfidenceLevel, FeedbackRating, SelfEvaluationAuditor
+    )
 """
 
 from tensorflow.python.multi_agent.agent import Agent
+from tensorflow.python.multi_agent.auditor import AuditResult
+from tensorflow.python.multi_agent.auditor import ConfidenceLevel
+from tensorflow.python.multi_agent.auditor import FeedbackRating
+from tensorflow.python.multi_agent.auditor import SelfEvaluationAuditor
 from tensorflow.python.multi_agent.coordinator import TaskCoordinator
 from tensorflow.python.multi_agent.task import Task
 from tensorflow.python.multi_agent.task import TaskPriority
