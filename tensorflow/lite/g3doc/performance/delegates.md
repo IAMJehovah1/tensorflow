@@ -85,7 +85,8 @@ the *Platform* (Android or iOS?) you target, and the *Model-type*
 *   **Core ML delegate for newer iPhones and iPads** - For newer iPhones and
     iPads where Neural Engine is available, you can use Core ML delegate to
     accelerate inference for 32-bit or 16-bit floating-point models. Neural
-    Engine is available Apple mobile devices with A12 SoC or higher. For an
+    Engine is available on Apple mobile devices with A12 SoC or higher, and on
+    iPad Pro / Air / mini models with Apple Silicon (M1, M2, M3, M4). For an
     overview of the Core ML delegate and step-by-step instructions, see
     [TensorFlow Lite Core ML delegate](coreml_delegate.md).
 

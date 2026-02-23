@@ -6,12 +6,13 @@ which results in faster model inference on iOS devices.
 
 [TOC]
 
-## Supported iOS versions and processors
+## Supported iOS and iPadOS versions and processors
 
-* iOS 12 and later. In the older iOS versions, Core ML delegate will
+* iOS 12 / iPadOS 13 and later. In older versions, Core ML delegate will
   automatically fallback to CPU.
-* When running on iPhone Xs and later, it will use Neural Engine for faster
-  inference.
+* When running on iPhone Xs and later (A12 SoC or higher), or iPad Pro / Air /
+  mini with A12 SoC or later or Apple Silicon (M1, M2, M3, M4), it will use
+  the Neural Engine for faster inference.
 
 ## Update code to use Core ML delegate
 
@@ -112,8 +113,13 @@ Following ops are supported by the Core ML delegate.
 * Does Core ML delegate work on iOS Simulator?
   * Yes. The library includes x86 and x86_64 targets so it can run on
     a simulator, but you will not see performance boost over CPU.
+* Does Core ML delegate work on iPad Pro M4?
+  * Yes. iPad Pro / Air / mini with M4 (and other Apple Silicon M-series chips)
+    includes a Neural Engine that the Core ML delegate can use for accelerated
+    inference. Use it the same way as on iPhone — initialize the
+    `CoreMLDelegate` and pass it to the `Interpreter`.
 * Does TensorFlow Lite and Core ML delegate support macOS?
-  * TensorFlow Lite is only tested on iOS but not macOS.
+  * TensorFlow Lite is only tested on iOS/iPadOS but not macOS.
 * Are custom TF Lite ops supported?
   * No, CoreML delegate does not support custom ops and they will fallback to
     CPU.
